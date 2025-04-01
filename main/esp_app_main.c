@@ -78,6 +78,9 @@ typedef struct {
     bool is_signed;
 } DefaultNumVal;
 
+#ifndef CONFIG_DISPLAY_WELCOME_MESSAGE
+#define CONFIG_DISPLAY_WELCOME_MESSAGE "SqueezeESP32"
+
 const DefaultNumVal defaultNumVals[] = {
     {"ota_erase_blk", OTA_FLASH_ERASE_BLOCK, 0},
     {"ota_stack", OTA_STACK_SIZE, 0},
@@ -87,7 +90,8 @@ const DefaultStringVal defaultStringVals[] = {
     {"equalizer", ""},
     {"loudness", "0"},
     {"actrls_config", ""},
-    {"lms_ctrls_raw", "n"},
+    //{"lms_ctrls_raw", "n"},
+	{"lms_ctrls_raw", "y"},
     {"rotary_config", CONFIG_ROTARY_ENCODER},
 	{"volume_rotary", CONFIG_VOLUME_ROTARY_ENCODER},
     {"display_config", CONFIG_DISPLAY_CONFIG},
@@ -399,7 +403,8 @@ void app_main()
 	services_init();
 	MEMTRACE_PRINT_DELTA();
 	ESP_LOGI(TAG,"Initializing display");
-	display_init("SqueezeESP32");
+	//display_init("SqueezeESP32");
+	display_init(CONFIG_DISPLAY_WELCOME_MESSAGE); // custom
 	MEMTRACE_PRINT_DELTA();
 	char *target = config_alloc_get_str("target", CONFIG_TARGET, NULL);
 	if (target) {

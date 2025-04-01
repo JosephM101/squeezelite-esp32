@@ -337,6 +337,11 @@ menu "Squeezelite-ESP32"
 				Set parameters for display screen, leave empty for no screen
 				I2C,driver=<model>,width=<pixels>,height=<pixels>[address=<i2c_address>][,HFlip][,VFlip][,rotate]
 				SPI,driver=<model>,width=<pixels>,height=<pixels>,cs=<gpio>[,HFlip][,VFlip][,rotate]
+		config DISPLAY_WELCOME_MESSAGE
+			string "Welcome message"
+			default "SqueezeESP32"
+			help
+				Set the text to be shown on the display when the device powers on
 	endmenu
 
 	menu "Various I/O"
@@ -430,7 +435,7 @@ menu "Squeezelite-ESP32"
 		config POWER_GPIO
 			int "Power on/off GPIO"
 			help
-				GPIO that is switched when LMS turns player one. Set to -1 to disable
+				GPIO that is switched when LMS turns player on. Set to -1 to disable
 		config POWER_GPIO_LEVEL
 			depends on POWER_GPIO != -1
 			int "Active level(0/1)"
