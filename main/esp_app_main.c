@@ -80,6 +80,7 @@ typedef struct {
 
 #ifndef CONFIG_DISPLAY_WELCOME_MESSAGE
 #define CONFIG_DISPLAY_WELCOME_MESSAGE "SqueezeESP32"
+#endif
 
 const DefaultNumVal defaultNumVals[] = {
     {"ota_erase_blk", OTA_FLASH_ERASE_BLOCK, 0},
