@@ -190,8 +190,8 @@ CONFIG_TARGET_LOCKED=n
 # CONFIG_SQUEEZEAMP is not set
 CONFIG_BASIC_I2C_BT=y
 # CONFIG_TWATCH2020 is not set
-CONFIG_RELEASE_API="https://api.github.com/repos/sle118/squeezelite-esp32/releases"
-CONFIG_SQUEEZELITE_ESP32_RELEASE_URL="https://github.com/sle118/squeezelite-esp32/releases"
+CONFIG_RELEASE_API="https://api.github.com/repos/JosephM101/squeezelite-esp32/releases"
+CONFIG_SQUEEZELITE_ESP32_RELEASE_URL="https://github.com/JosephM101/squeezelite-esp32/releases"
 CONFIG_PROJECT_NAME="Squeezelite-ESP32"
 CONFIG_FW_PLATFORM_NAME="ESP32"
 CONFIG_DAC_CONFIG=""
