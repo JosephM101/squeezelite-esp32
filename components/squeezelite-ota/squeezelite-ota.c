@@ -595,7 +595,7 @@ void ota_task(void *pvParameter)
 
 	/* Locate and erase ota application partition */
 	sendMessaging(MESSAGING_INFO,"Formatting OTA partition");
-	ESP_LOGW(TAG,"****************  Expecting WATCHDOG errors below during flash erase. This is OK and not to worry about **************** ");
+	ESP_LOGW(TAG,"****************  Expect WATCHDOG errors below during flash erase. This is OK; nothing to worry about **************** ");
 	IF_DISPLAY(GDS_TextLine(display, 2, GDS_TEXT_LEFT, GDS_TEXT_CLEAR | GDS_TEXT_UPDATE, "Formatting partition"));
 
 	_printMemStats();
@@ -666,9 +666,13 @@ void ota_task(void *pvParameter)
     err = esp_ota_set_boot_partition(ota_status->ota_partition);
     if (err == ESP_OK) {
     	ESP_LOGI(TAG,"OTA Process completed successfully!");
-    	sendMessaging(MESSAGING_INFO,"Success!");
-    	IF_DISPLAY(GDS_TextLine(display, 2, GDS_TEXT_LEFT, GDS_TEXT_CLEAR | GDS_TEXT_UPDATE, "Success!"));
-    	vTaskDelay(3500/ portTICK_PERIOD_MS);  // wait here to give the UI a chance to refresh
+
+		//char *ota_complete_display_message = "Success!";
+		char *ota_complete_display_message = "Update complete!";
+
+    	sendMessaging(MESSAGING_INFO,ota_complete_display_message);
+    	IF_DISPLAY(GDS_TextLine(display, 2, GDS_TEXT_LEFT, GDS_TEXT_CLEAR | GDS_TEXT_UPDATE, ota_complete_display_message));
+    	vTaskDelay(3500 / portTICK_PERIOD_MS);  // wait here to give the UI a chance to refresh
     	IF_DISPLAY(GDS_Clear(display,GDS_COLOR_BLACK));
         esp_restart();
     } else {
