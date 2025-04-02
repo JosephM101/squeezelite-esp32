@@ -684,15 +684,56 @@ void draw_VU(struct GDS_Device * display, int level, int x, int y, int width, bo
 /****************************************************************************************
  * Process graphic display data
  */
-static void grfe_handler( u8_t *data, int len) {
-	struct grfe_packet *pkt = (struct grfe_packet*) data;		
+static void grfe_handler(u8_t *data, int len) {
+	struct grfe_packet *pkt = (struct grfe_packet*) data;
 	
-	if (!display) return;
+	if (!display) return; // A display is not configured / initialized. We will disregard the packet.
+
+	enum GRFE_SCREEN_ANIMATION_TYPE {
+		LEFT_BOUNCE,
+		RIGHT_BOUNCE,
+		LEFT_SCROLL,
+		RIGHT_SCROLL
+	} __grfe_screen_animation_type;
 	
-	// we don't support transition, simply claim we're done
 	if (pkt->transition != 'c') {
+		///TODO: Add code to scroll screen left and right (l/r) (do this first)
+		///TODO: Add code to bounce screen left and right when we can't navigate any further (L/R)
+		///TODO: Add code to scroll list items up and down (u/d)
+
+		// Note: "param" may be "Y pixel offset". For example, if param=19, that means all pixels below line 19 will be affected/scrolled.
 		LOG_INFO("Transition %c requested with offset %hu, param %d", pkt->transition, pkt->offset, pkt->param);
-		sendANIC(ANIM_TRANSITION);
+
+		switch(pkt->transition) {
+			case 'l':
+				// Screen scroll: scroll the screen left
+				/*  To scroll the screen, we need to buffer two frames: the frame that is currently displayed on the screen, and the frame that the LMS server sent us.
+					We need to create a new frame that is the two frames side-by-side, and animate it sliding in the desired direction.
+					If an action is performed during the transition, the transition needs to be cancelled immediately.
+				*/
+				LOG_DEBUG("Transition: Left nav, scroll the entire screen to the left");
+				__grfe_screen_animation_type = LEFT_SCROLL;
+				break;
+			case 'r':
+				// Screen scroll: scroll the screen right
+				LOG_DEBUG("Transition: Right nav, scroll the entire screen to the right");
+				__grfe_screen_animation_type = RIGHT_SCROLL;
+				break;
+
+			/* Below are handlers for visual indicators that indicate we can't travel any further left or right on the screen. (e.g. trying to go back whilst on the home page) */
+			case 'L':
+				// Bounce the screen to the left
+				LOG_DEBUG("Transition: Bounce the frame out from the left");
+				__grfe_screen_animation_type = LEFT_BOUNCE;
+				break;
+			case 'R':
+				// Bounce the screen to the right
+				LOG_DEBUG("Transition: Bounce the frame out from the right");
+				__grfe_screen_animation_type = RIGHT_BOUNCE;
+				break;
+		}
+
+		sendANIC(ANIM_TRANSITION); // Tell the server we've completed the transition animation
 	}
 	
 	xSemaphoreTake(displayer.mutex, portMAX_DELAY);
